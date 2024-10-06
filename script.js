@@ -1,4 +1,4 @@
-const scientists = [ 
+const scientists = [
     { 
         name: "Albert", 
         surname: "Einstein", 
@@ -84,3 +84,85 @@ const scientists = [
         id: 12 
     } 
 ];
+
+function getBornIn19thCentury() {
+    const scientists19th = scientists.filter(scientist => scientist.born >= 1800 && scientist.born < 1900);
+    displayScientists(scientists19th);
+}
+
+function sortAlphabetically() {
+    const sortedScientists = [...scientists].sort((a, b) => a.surname.localeCompare(b.surname));
+    displayScientists(sortedScientists);
+}
+
+function sortByYearsLived() {
+    const sortedByYears = [...scientists].sort((a, b) => (b.dead - b.born) - (a.dead - a.born));
+    displayScientists(sortedByYears);
+}
+
+function findLatestBorn() {
+    const latestBorn = scientists.reduce((latest, scientist) => (scientist.born > latest.born ? scientist : latest), scientists[0]);
+    displayScientists([latestBorn]);
+}
+
+function findYearOfBirth(name) {
+    const scientist = scientists.find(sc => sc.name === name);
+    return scientist ? scientist.born : null;
+}
+
+function findScientistsBySurnameStartingWith(letter) {
+    const filteredScientists = scientists.filter(sc => sc.surname.startsWith(letter));
+    displayScientists(filteredScientists);
+}
+
+function removeScientistsByFirstNameStartingWith(letter) {
+    const filteredScientists = scientists.filter(sc => !sc.name.startsWith(letter));
+    displayScientists(filteredScientists);
+}
+
+function findLongestAndShortestLived() {
+    const livedYears = scientists.map(sc => ({
+        ...sc,
+        yearsLived: sc.dead - sc.born
+    }));
+    const longestLived = livedYears.reduce((prev, current) => (current.yearsLived > prev.yearsLived ? current : prev));
+    const shortestLived = livedYears.reduce((prev, current) => (current.yearsLived < prev.yearsLived ? current : prev));
+    displayScientists([longestLived, shortestLived]);
+}
+
+function findScientistsWithSameInitials() {
+    const sameInitials = scientists.filter(sc => sc.name.charAt(0) === sc.surname.charAt(0));
+    displayScientists(sameInitials);
+}
+
+function allScientistsWorkedIn19thCentury() {
+    const allIn19th = scientists.every(sc => sc.born >= 1800 && sc.dead < 1900);
+    alert(`Усі вчені працювали в 19 столітті: ${allIn19th}`);
+}
+
+function displayScientists(scientistsList) {
+    const listElement = document.querySelector('.card-ten__list');
+    listElement.innerHTML = '';
+    scientistsList.forEach(scientist => {
+        const item = document.createElement('li');
+        item.classList.add('card-ten__item');
+        item.innerHTML = `<p class="card-ten__text">${scientist.name} ${scientist.surname}</p>`;
+        listElement.appendChild(item);
+    });
+}
+
+document.getElementById('btn1').addEventListener('click', getBornIn19thCentury);
+document.getElementById('btn2').addEventListener('click', sortAlphabetically);
+document.getElementById('btn3').addEventListener('click', sortByYearsLived);
+document.getElementById('btn4').addEventListener('click', findLatestBorn);
+document.getElementById('btn5').addEventListener('click', () => {
+    alert(`Рік народження Albert Einstein: ${findYearOfBirth('Albert')}`);
+});
+document.getElementById('btn6').addEventListener('click', () => {
+    findScientistsBySurnameStartingWith('C');
+});
+document.getElementById('btn7').addEventListener('click', () => {
+    removeScientistsByFirstNameStartingWith('A');
+});
+document.getElementById('btn8').addEventListener('click', findLongestAndShortestLived);
+document.getElementById('btn9').addEventListener('click', findScientistsWithSameInitials);
